@@ -3,6 +3,7 @@ package py.com.daas.testfullstackjava.services.impl;
 import java.security.Key;
 import java.util.Collection;
 import java.util.Date;
+import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,6 +28,20 @@ public class JwtService {
     ) {
         this.secretKey = secretKey;
         this.validityInMilliseconds = validityInMilliseconds;
+    }
+
+    public String extractUserName(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolvers.apply(claims);
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token)
+                .getBody();
     }
 
     public String generateToken(String username, Collection<? extends GrantedAuthority> roles) {
