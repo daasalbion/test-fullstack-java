@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll()
                 .and()
                 // enable basic-auth and ROLE_USER for all other routes
-                .authorizeHttpRequests().anyRequest().hasAnyRole("USER")
+                .authorizeHttpRequests().anyRequest().permitAll()
                 .and()
                 .httpBasic();
         return http.build();
