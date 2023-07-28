@@ -1,5 +1,6 @@
 package py.com.daas.testfullstackjava.services.impl;
 
+import static java.util.Objects.isNull;
 import static org.springframework.security.core.userdetails.User.withUsername;
 
 import java.util.Collections;
@@ -80,16 +81,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(User user) {
-        User localUser = get(user.getId());
-        if (getByUsername(user.getEmail()).isPresent()) {
+    public User update(Long id, User updatedUser) {
+        User user = get(id);
+        if (getByUsername(updatedUser.getEmail()).isPresent()) {
             throw new IllegalArgumentException("User already exists");
         }
-        localUser.setFullName(user.getFullName());
-        localUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        localUser.setStatus(user.getStatus());
+        if (!isNull(updatedUser.getFullName())) {
+            user.setFullName(updatedUser.getFullName());
+        }
+        if (!isNull(updatedUser.getPassword())) {
+            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+        }
+        if (!isNull(updatedUser.getStatus())) {
+            user.setStatus(updatedUser.getStatus());
+        }
 
-        return userRepository.save(localUser);
+        return userRepository.save(user);
     }
 
     @Override

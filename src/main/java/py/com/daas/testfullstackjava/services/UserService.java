@@ -13,7 +13,7 @@ public interface UserService extends UserDetailsService {
 
     Optional<User> getByUsername(String username);
     User create(User user);
-    User update(User user);
+    User update(Long id, User user);
     User get(Long id);
     void delete(Long id);
     Page<User> findAll(UserFilter userFilter, Pageable pageable);

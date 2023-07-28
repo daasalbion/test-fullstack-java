@@ -3,6 +3,7 @@ package py.com.daas.testfullstackjava.configurations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -41,8 +42,8 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                                 .requestMatchers("/api/auth/login").permitAll()
-                                .requestMatchers("/api/users").hasAnyRole("ADMIN", "CONSULTOR")
-                                .requestMatchers("/api/users/**").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/users").hasAnyRole("ADMIN", "CONSULTOR")
+                                .requestMatchers("/api/users/**").hasRole("ADMIN")
                                 .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
