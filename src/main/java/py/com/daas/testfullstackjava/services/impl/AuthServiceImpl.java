@@ -1,6 +1,7 @@
 package py.com.daas.testfullstackjava.services.impl;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,9 +9,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.security.InvalidKeyException;
+import py.com.daas.testfullstackjava.dtos.JwtResponse;
 import py.com.daas.testfullstackjava.dtos.LoginDto;
 import py.com.daas.testfullstackjava.services.AuthService;
 import py.com.daas.testfullstackjava.services.UserService;
@@ -34,11 +38,17 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Optional<String> login(LoginDto loginDto) {
+    public Optional<JwtResponse> login(LoginDto loginDto) {
         LOGGER.info("User = {} attempting to log in", loginDto.username());
-        return Optional.of(userService.loadUserByUsername(loginDto.username()))
-                .flatMap(u -> authenticate(loginDto))
-                .flatMap(this::generateToken);
+        UserDetails userDetails = userService.loadUserByUsername(loginDto.username());
+        Optional<Authentication> authentication = authenticate(loginDto);
+        Optional<String> jwt = Optional.empty();
+        if (authentication.isPresent()) {
+            jwt = generateToken(authentication.get());
+        }
+
+        return Optional.of(new JwtResponse(jwt.get(), null, userDetails.getUsername(), userDetails.getUsername(),
+                userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList())));
     }
 
     @Override
