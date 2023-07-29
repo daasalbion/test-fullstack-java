@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(Long id, User updatedUser) {
         User user = get(id);
-        if (getByUsername(updatedUser.getEmail()).isPresent()) {
+        if (!updatedUser.getEmail().equals(user.getEmail()) && getByUsername(updatedUser.getEmail()).isPresent()) {
             throw new IllegalArgumentException("User already exists");
         }
         if (!isNull(updatedUser.getFullName())) {

@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import py.com.daas.testfullstackjava.entities.User;
 import py.com.daas.testfullstackjava.entities.UserFilter;
 import py.com.daas.testfullstackjava.services.UserService;
@@ -25,9 +28,11 @@ import py.com.daas.testfullstackjava.services.UserService;
 public class UserController {
 
     private final UserService userService;
+    private final ObjectMapper objectMapper;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, ObjectMapper objectMapper) {
         this.userService = userService;
+        this.objectMapper = objectMapper;
     }
 
     @PostMapping
@@ -52,10 +57,13 @@ public class UserController {
     }
 
     @GetMapping
-    public Page<User> list(@RequestParam(value = "fullName", required = false) String fullName,
-            @RequestParam(value = "email", required = false) String email, @RequestParam(value =
-            "status", required = false) String status, Pageable pageable) {
-        UserFilter userFilter = new UserFilter(fullName, email, status);
+    public Page<User> list(@RequestParam(value = "filter", required = false) String filter, Pageable pageable)
+            throws JsonProcessingException {
+        UserFilter userFilter = new UserFilter(null, null, null);
+        if (filter != null) {
+            userFilter = objectMapper.readValue(filter, UserFilter.class);
+        }
+
         return userService.findAll(userFilter, pageable);
     }
 }
