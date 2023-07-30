@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,8 +27,6 @@ import py.com.daas.testfullstackjava.services.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
-
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -66,7 +62,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto create(UserDto userDto) {
         if (getByUsername(userDto.email()).isPresent()) {
-            throw new IllegalArgumentException("User already exists");
+            throw new IllegalArgumentException(String.format("User with email = %s, already exists",
+                    userDto.email()));
         }
         User user = new User(userDto.fullName(), userDto.email(), userDto.status());
         user.setPassword(passwordEncoder.encode(userDto.password()));
@@ -79,7 +76,8 @@ public class UserServiceImpl implements UserService {
     public UserDto update(Long id, UserDto userDto) {
         User storedUser = getById(id);
         if (!storedUser.getEmail().equals(userDto.email()) && getByUsername(userDto.email()).isPresent()) {
-            throw new IllegalArgumentException("User already exists");
+            throw new IllegalArgumentException(String.format("Different User with email = %s, already exists",
+                    userDto.email()));
         }
         User user = new User(storedUser.getId(), userDto.fullName(), userDto.email(), userDto.status());
         user.setPassword(storedUser.getPassword());
@@ -122,7 +120,7 @@ public class UserServiceImpl implements UserService {
 
     private User getById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new IllegalArgumentException(String.format("User with id = %s, not found", id)));
     }
 
     private Optional<User> getByUsername(String username) {
@@ -131,7 +129,8 @@ public class UserServiceImpl implements UserService {
 
     private List<Role> getRolByName(String roleName) {
         Role role = roleRepository.findRolByName(String.format("ROLE_%s", roleName))
-                .orElseThrow(() -> new IllegalArgumentException("Rol is not present"));
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Role with name = %s, is not present",
+                        roleName)));
         return Collections.singletonList(role);
     }
 
