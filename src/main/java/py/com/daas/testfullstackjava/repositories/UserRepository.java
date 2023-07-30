@@ -12,6 +12,7 @@ import py.com.daas.testfullstackjava.entities.User;
 public interface UserRepository extends CrudRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
+    Optional<User> findByEmailAndStatus(String email, String status);
     Page<User> findAll(Example<User> example, Pageable pageable);
 
 }

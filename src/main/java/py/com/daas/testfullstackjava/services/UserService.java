@@ -1,21 +1,18 @@
 package py.com.daas.testfullstackjava.services;
 
-import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import py.com.daas.testfullstackjava.entities.User;
-import py.com.daas.testfullstackjava.entities.UserFilter;
+import py.com.daas.testfullstackjava.dtos.UserDto;
+import py.com.daas.testfullstackjava.dtos.UserFilter;
 
 public interface UserService extends UserDetailsService {
 
-    Optional<User> getByUsername(String username);
-    User create(User user);
-    User update(Long id, User user);
-    User get(Long id);
+    UserDto create(UserDto user);
+    UserDto update(Long id, UserDto user);
+    UserDto get(Long id);
     void delete(Long id);
-    Page<User> findAll(UserFilter userFilter, Pageable pageable);
+    Page<UserDto> findAll(UserFilter userFilter, Pageable pageable);
 
 }

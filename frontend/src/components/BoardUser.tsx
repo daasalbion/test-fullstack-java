@@ -43,10 +43,9 @@ const BoardUser: React.FC = () => {
                 setUsers(response.data.content);
             },
             (error) => {
-                const _content = error?.response?.data?.message || error.message || error.toString();
-                setUsers(_content);
-                if (error.response && error.response.status === 401) {
+                if (error.response && (error.response.status === 401 || error.response.status == 403)) {
                     EventBus.dispatch("logout");
+                    navigate("/login");
                 }
             }
         );
@@ -82,8 +81,8 @@ const BoardUser: React.FC = () => {
                                         </div>
                                         <div className="col">
                                             <Field as="select" name="status" type="text" className="form-control">
-                                                <option value="Activo">Activo</option>
-                                                <option value="Inactivo">Inactivo</option>
+                                                <option value="ACTIVO">ACTIVO</option>
+                                                <option value="INACTIVO">INACTIVO</option>
                                             </Field>
                                         </div>
                                     </div>
@@ -101,7 +100,6 @@ const BoardUser: React.FC = () => {
                             )
                         }
                     }
-
                 </Formik>
             </div>
             <hr />

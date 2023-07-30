@@ -8,6 +8,5 @@ import py.com.daas.testfullstackjava.dtos.LoginDto;
 public interface AuthService {
 
     Optional<JwtResponse> login(LoginDto loginDto);
-    boolean validateToken(String token);
 
 }

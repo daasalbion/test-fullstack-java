@@ -1,19 +1,16 @@
 package py.com.daas.testfullstackjava.services.impl;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import io.jsonwebtoken.security.InvalidKeyException;
 import py.com.daas.testfullstackjava.dtos.JwtResponse;
 import py.com.daas.testfullstackjava.dtos.LoginDto;
 import py.com.daas.testfullstackjava.services.AuthService;
@@ -41,38 +38,20 @@ public class AuthServiceImpl implements AuthService {
     public Optional<JwtResponse> login(LoginDto loginDto) {
         LOGGER.info("User = {} attempting to log in", loginDto.username());
         UserDetails userDetails = userService.loadUserByUsername(loginDto.username());
-        Optional<Authentication> authentication = authenticate(loginDto);
-        Optional<String> jwt = Optional.empty();
-        if (authentication.isPresent()) {
-            jwt = generateToken(authentication.get());
-        }
+        Authentication authentication = authenticate(loginDto);
+        String jwt = generateToken(authentication);
 
-        return Optional.of(new JwtResponse(jwt.get(), null, userDetails.getUsername(), userDetails.getUsername(),
-                userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList())));
+        return Optional.of(new JwtResponse(jwt, null, userDetails.getUsername(), userDetails.getUsername(),
+                userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList()));
     }
 
-    @Override
-    public boolean validateToken(String token) {
-        return jwtService.validateToken(token);
+    private Authentication authenticate(LoginDto loginDto) {
+        return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.username(),
+                loginDto.password()));
     }
 
-    private Optional<Authentication> authenticate(LoginDto loginDto) {
-        try {
-            return Optional.of(authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(loginDto.username(), loginDto.password())));
-        } catch (AuthenticationException ex) {
-            LOGGER.error("Authentication failed for user = {}", loginDto.username(), ex);
-            return Optional.empty();
-        }
-    }
-
-    private Optional<String> generateToken(Authentication authentication) {
-        try {
-            return Optional.of(jwtService.generateToken(authentication.getName(), authentication.getAuthorities()));
-        } catch (InvalidKeyException ex) {
-            LOGGER.error("Token generation failed for user = {}", authentication.getName(), ex);
-            return Optional.empty();
-        }
+    private String generateToken(Authentication authentication) {
+        return jwtService.generateToken(authentication.getName(), authentication.getAuthorities());
     }
 
 }

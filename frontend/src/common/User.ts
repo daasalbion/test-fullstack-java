@@ -4,7 +4,16 @@ export type User = {
     email: string;
     password: string;
     status: string;
+    role: string
 }
+
+export const initialValues: User = {
+    fullName: "",
+    email: "",
+    password: "",
+    status: "Activo",
+    role: "CONSULTOR"
+};
 
 export type Filter = {
     fullName?: string;

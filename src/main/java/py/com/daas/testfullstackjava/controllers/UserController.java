@@ -18,8 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import py.com.daas.testfullstackjava.entities.User;
-import py.com.daas.testfullstackjava.entities.UserFilter;
+import jakarta.validation.Valid;
+import py.com.daas.testfullstackjava.dtos.UserDto;
+import py.com.daas.testfullstackjava.dtos.UserFilter;
 import py.com.daas.testfullstackjava.services.UserService;
 
 @RestController
@@ -37,17 +38,17 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public User create(@RequestBody User user) {
+    public UserDto create(@RequestBody @Valid UserDto user) {
         return userService.create(user);
     }
 
     @PutMapping("/{id}")
-    public User update(@PathVariable("id") Long id, @RequestBody User user) {
+    public UserDto update(@PathVariable("id") Long id, @RequestBody @Valid UserDto user) {
         return userService.update(id, user);
     }
 
     @GetMapping("/{id}")
-    public User get(@PathVariable("id") Long id) {
+    public UserDto get(@PathVariable("id") Long id) {
         return userService.get(id);
     }
 
@@ -57,7 +58,7 @@ public class UserController {
     }
 
     @GetMapping
-    public Page<User> list(@RequestParam(value = "filter", required = false) String filter, Pageable pageable)
+    public Page<UserDto> list(@RequestParam(value = "filter", required = false) String filter, Pageable pageable)
             throws JsonProcessingException {
         UserFilter userFilter = new UserFilter(null, null, null);
         if (filter != null) {

@@ -3,7 +3,7 @@ import {getUser, updateUser} from "../services/user.service";
 import {NavigateFunction, useNavigate, useParams} from "react-router-dom";
 import * as Yup from "yup";
 import {ErrorMessage, Field, Form, Formik} from "formik";
-import {User} from "../common/User";
+import {initialValues, User} from "../common/User";
 import EventBus from "../common/EventBus";
 
 const EditUserForm: React.FC = () => {
@@ -12,12 +12,6 @@ const EditUserForm: React.FC = () => {
     const { id } = useParams();
     const [loading, setLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
-    const initialValues: User = {
-        fullName: "",
-        email: "",
-        password: "",
-        status: "Activo",
-    };
     const [values, setValues] = useState<User>(initialValues);
 
     useEffect(() => {
@@ -47,7 +41,8 @@ const EditUserForm: React.FC = () => {
         fullName: Yup.string().required("This field is required!"),
         email: Yup.string().required("This field is required!"),
         password: Yup.string().required("This field is required!"),
-        status: Yup.string().required("This field is required!")
+        status: Yup.string().required("This field is required!"),
+        role: Yup.string().required("This field is required!")
     });
 
     const handleLogin = (formValue: User) => {
@@ -116,11 +111,23 @@ const EditUserForm: React.FC = () => {
                         <div className="form-group">
                             <label htmlFor="status">Status</label>
                             <Field as="select" name="status" type="text" className="form-control">
-                                <option value="Activo">Activo</option>
-                                <option value="Inactivo">Inactivo</option>
+                                <option value="ACTIVO">ACTIVO</option>
+                                <option value="INACTIVO">INACTIVO</option>
                             </Field>
                             <ErrorMessage
                                 name="status"
+                                component="div"
+                                className="alert alert-danger"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="role">Role</label>
+                            <Field as="select" name="role" type="text" className="form-control">
+                                <option value="ADMIN">ADMIN</option>
+                                <option value="CONSULTOR">CONSULTOR</option>
+                            </Field>
+                            <ErrorMessage
+                                name="role"
                                 component="div"
                                 className="alert alert-danger"
                             />

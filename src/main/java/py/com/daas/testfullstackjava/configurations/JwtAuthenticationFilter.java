@@ -1,6 +1,7 @@
 package py.com.daas.testfullstackjava.configurations;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
@@ -41,17 +42,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         final String jwt = authHeader.substring(7);
-        final boolean isValidToken = jwtService.validateToken(jwt);
-        final String userEmail = jwtService.extractUserName(jwt);
+        try {
+            final boolean isValidToken = jwtService.validateToken(jwt);
+            final String userEmail = jwtService.extractUserName(jwt);
 
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userService.loadUserByUsername(userEmail);
-            if (isValidToken) {
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userService.loadUserByUsername(userEmail);
+                if (isValidToken) {
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
+        } catch (Exception ex) {
+            throw new AccessDeniedException(ex.getMessage());
         }
 
         filterChain.doFilter(request, response);
