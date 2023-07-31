@@ -41,7 +41,7 @@ const App: React.FC = () => {
   return (
     <div>
       <nav className="navbar navbar-expand navbar-dark bg-dark">
-        <Link to={"/user"} className="navbar-brand">
+        <Link to={"/"} className="navbar-brand">
           DAAS
         </Link>
         <div className="navbar-nav mr-auto">
@@ -62,7 +62,7 @@ const App: React.FC = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <a href="/login" className="nav-link" onClick={logOut}>
+              <a href="/" className="nav-link" onClick={logOut}>
                 LogOut
               </a>
             </li>
