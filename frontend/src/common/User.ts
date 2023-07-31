@@ -11,7 +11,7 @@ export const initialValues: User = {
     fullName: "",
     email: "",
     password: "",
-    status: "Activo",
+    status: "ACTIVO",
     role: "CONSULTOR"
 };
 

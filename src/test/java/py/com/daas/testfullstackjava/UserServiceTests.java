@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import py.com.daas.testfullstackjava.dtos.UserDto;
 import py.com.daas.testfullstackjava.entities.Role;
 import py.com.daas.testfullstackjava.entities.User;
+import py.com.daas.testfullstackjava.entities.UserStatus;
 import py.com.daas.testfullstackjava.repositories.RoleRepository;
 import py.com.daas.testfullstackjava.repositories.UserRepository;
 import py.com.daas.testfullstackjava.services.UserService;
@@ -37,7 +38,7 @@ class UserServiceTests {
     void setup() {
         userService = new UserServiceImpl(passwordEncoder, userRepository, roleRepository);
         role = new Role("ROL_CONSULTOR", "CONSULTOR");
-        userDto = new UserDto(null, "fullName", "name@gmail.com", "password", "CONSULTOR", "ACTIVO");
+        userDto = new UserDto(null, "fullName", "name@gmail.com", "password", "CONSULTOR", UserStatus.ACTIVO);
         user = new User(userDto.fullName(), userDto.email(), userDto.password(),
                 Collections.singletonList(role));
         userId = 2L;
@@ -83,7 +84,7 @@ class UserServiceTests {
 
     @Test
     void updateUserUserWithDifferentEmailError() {
-        UserDto userDto = new UserDto(null, "fullName", "name2@gmail.com", "password", "CONSULTOR", "ACTIVO");
+        UserDto userDto = new UserDto(null, "fullName", "name2@gmail.com", "password", "CONSULTOR", UserStatus.ACTIVO);
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(userRepository.findByEmail(userDto.email())).thenReturn(Optional.of(user));
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userService.update(userId, userDto));

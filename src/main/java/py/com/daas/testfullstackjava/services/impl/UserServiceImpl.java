@@ -21,6 +21,7 @@ import py.com.daas.testfullstackjava.dtos.UserDto;
 import py.com.daas.testfullstackjava.dtos.UserFilter;
 import py.com.daas.testfullstackjava.entities.Role;
 import py.com.daas.testfullstackjava.entities.User;
+import py.com.daas.testfullstackjava.entities.UserStatus;
 import py.com.daas.testfullstackjava.repositories.RoleRepository;
 import py.com.daas.testfullstackjava.repositories.UserRepository;
 import py.com.daas.testfullstackjava.services.UserService;
@@ -40,9 +41,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmailAndStatus(username, "ACTIVO")
+        User user = userRepository.findByEmailAndStatus(username, UserStatus.ACTIVO)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("User with " +
-                        "fullName %s does not exist", username)));
+                        "fullName %s does not exist or is inactive", username)));
         List<SimpleGrantedAuthority> userAuthorities = user.getRoles()
                 .stream()
                 .map(Role::getName)

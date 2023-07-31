@@ -1,10 +1,11 @@
 package py.com.daas.testfullstackjava.configurations;
 
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,7 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain)
-            throws ServletException, IOException {
+            throws ServletException, IOException, AccessDeniedException {
         final String authHeader = request.getHeader("Authorization");
 
         if (StringUtils.isEmpty(authHeader) || !StringUtils.startsWith(authHeader, "Bearer ")) {
@@ -55,10 +56,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
-        } catch (Exception ex) {
-            throw new AccessDeniedException(ex.getMessage());
-        }
 
-        filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
+        } catch (RuntimeException ex) {
+            response.sendError(HttpStatus.FORBIDDEN.value(), ex.getMessage());
+        }
     }
 }

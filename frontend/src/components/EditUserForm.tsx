@@ -51,7 +51,7 @@ const EditUserForm: React.FC = () => {
 
         updateUser(id, formValue).then(
             () => {
-                navigate("/user");
+                navigate("/");
                 window.location.reload();
             },
             (error) => {

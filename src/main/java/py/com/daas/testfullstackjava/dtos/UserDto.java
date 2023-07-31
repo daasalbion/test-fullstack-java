@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import py.com.daas.testfullstackjava.entities.Role;
 import py.com.daas.testfullstackjava.entities.User;
+import py.com.daas.testfullstackjava.entities.UserStatus;
 
 public record UserDto(
         Long id,
@@ -11,7 +12,7 @@ public record UserDto(
         @Email @NotEmpty(message = "email cannot be null") String email,
         @NotEmpty(message = "password cannot be null") String password,
         @NotEmpty(message = "password cannot be null") String role,
-        String status) {
+        UserStatus status) {
     public static UserDto fromUser(User user) {
         return new UserDto(user.getId(), user.getFullName(), user.getEmail(), user.getPassword(),
                 user.getRoles().stream().map(Role::getDescription).findFirst().orElse(null), user.getStatus());

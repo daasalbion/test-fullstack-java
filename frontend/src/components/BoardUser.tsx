@@ -30,7 +30,7 @@ const BoardUser: React.FC = () => {
 
     const handleDelete = (id: number) => {
         deleteUser(id).then(() => {
-            navigate("/user");
+            navigate("/");
             window.location.reload();
         });
     }
@@ -110,7 +110,7 @@ const BoardUser: React.FC = () => {
                     <td>Full Name</td>
                     <td>Email</td>
                     <td>Status</td>
-                    <td>Created At</td>
+                    <td>Role</td>
                     {isAdmin && <td>Actions</td>}
                 </tr>
                 </thead>
@@ -120,7 +120,7 @@ const BoardUser: React.FC = () => {
                     <td>{i.fullName}</td>
                     <td>{i.email}</td>
                     <td>{i.status}</td>
-                    <td>{i.status}</td>
+                    <td>{i.role}</td>
                     {isAdmin && <td>
                         <Link to={`/editUser/${i.id}`}>
                             <button className="btn btn-primary editProject">

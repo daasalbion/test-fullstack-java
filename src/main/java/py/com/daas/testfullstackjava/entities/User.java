@@ -3,6 +3,7 @@ package py.com.daas.testfullstackjava.entities;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -27,7 +28,8 @@ public class User {
     private String fullName;
     private String email;
     private String password;
-    private String status;
+    @Convert(converter = UserStatusConverter.class)
+    private UserStatus status;
 
     @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles", joinColumns
@@ -37,13 +39,13 @@ public class User {
 
     public User() {}
 
-    public User(String fullName, String email, String status) {
+    public User(String fullName, String email, UserStatus status) {
         this.fullName = fullName;
         this.email = email;
         this.status = status;
     }
 
-    public User(Long id, String fullName, String email, String status) {
+    public User(Long id, String fullName, String email, UserStatus status) {
         this(fullName, email, status);
         this.id = id;
     }

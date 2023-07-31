@@ -8,7 +8,6 @@ import * as AuthService from "./services/auth.service";
 import IUser from './types/user.type';
 
 import Login from "./components/Login";
-import Register from "./components/Register";
 import Profile from "./components/Profile";
 import BoardUser from "./components/BoardUser";
 
@@ -74,12 +73,6 @@ const App: React.FC = () => {
                 Login
               </Link>
             </li>
-
-            <li className="nav-item">
-              <Link to={"/register"} className="nav-link">
-                Sign Up
-              </Link>
-            </li>
           </div>
         )}
       </nav>
@@ -88,9 +81,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<BoardUser />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/user" element={<BoardUser />} />
           <Route path="/createUser" element={<CreateUserForm />} />
           <Route path="/editUser/:id" element={<EditUserForm />} />
         </Routes>

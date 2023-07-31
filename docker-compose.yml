@@ -1,0 +1,17 @@
+version: '3'
+services:
+    test-fullstack-java-service:
+        build: ./
+        image: test-fullstack-java:1.0.0
+        container_name: test-fullstack-java
+        ports:
+        - "8080:8080"
+        volumes:
+        - ./logs:/logs
+    test-fullstack-java-db-service:
+        container_name: testdb
+        image: postgres
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER:-myuser}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secret}
+            POSTGRES_DB: testdb

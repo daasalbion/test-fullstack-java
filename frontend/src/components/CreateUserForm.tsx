@@ -26,7 +26,7 @@ const CreateUserForm: React.FC = () => {
 
         createUser(formValue).then(
             () => {
-                navigate("/user");
+                navigate("/");
                 window.location.reload();
             },
             (error) => {
@@ -63,7 +63,7 @@ const CreateUserForm: React.FC = () => {
                       />
                   </div>
                   <div className="form-group">
-                      <label htmlFor="email">Username</label>
+                      <label htmlFor="email">Email</label>
                       <Field name="email" type="email" className="form-control" />
                       <ErrorMessage
                           name="email"

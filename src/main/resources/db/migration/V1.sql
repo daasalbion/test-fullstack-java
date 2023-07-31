@@ -4,11 +4,11 @@ CREATE SEQUENCE users_id_seq START 1;
 
 create table users
 (
-    id       integer default nextval('users_id_seq'::regclass) not null primary key,
-    full_name     varchar(255)                                      not null,
-    email    varchar(50)                                       not null,
-    status   varchar(20)                                       not null,
-    password varchar(500)                                      not null
+    id        integer default nextval('users_id_seq'::regclass) not null primary key,
+    full_name varchar(255)                                      not null,
+    email     varchar(50)                                       not null,
+    status    varchar(20)                                       not null,
+    password  varchar(500)                                      not null
 );
 
 CREATE UNIQUE INDEX ix_users_username on users (email);
@@ -36,9 +36,9 @@ create table users_roles
 CREATE INDEX ix_users_roles_user_id on users_roles (user_id);
 
 insert into users(full_name, email, password, status)
-values ('user', 'user', '$2a$10$DzJkAf225jy4f8s7xT3PHOKod/6mAlsbtx931iLN0KT8BuWtF/5Sy', 'ACTIVO');
+values ('admin', 'admin@gmail.com', '$2a$10$dRd.ZlbgW5E8Qt8iomMXdePS1S/bvzTJoDzstgql8qieACI2z6zQG', 'ACTIVO');
 insert into users(full_name, email, password, status)
-values ('admin', 'admin', '$2a$10$dRd.ZlbgW5E8Qt8iomMXdePS1S/bvzTJoDzstgql8qieACI2z6zQG', 'ACTIVO');
+values ('user', 'user@gmail.com', '$2a$10$DzJkAf225jy4f8s7xT3PHOKod/6mAlsbtx931iLN0KT8BuWtF/5Sy', 'ACTIVO');
 
 insert into roles(name, description)
 VALUES ('ROLE_ADMIN', 'ADMIN');
@@ -46,9 +46,9 @@ insert into roles(name, description)
 VALUES ('ROLE_CONSULTOR', 'CONSULTOR');
 
 insert into users_roles(user_id, rol_id)
-VALUES ((select id from users where email = 'user'), (select id from roles where name = 'ROLE_CONSULTOR'));
+VALUES ((select id from users where email = 'admin@gmail.com'), (select id from roles where name = 'ROLE_CONSULTOR'));
+insert into users_roles(user_id, rol_id)
+VALUES ((select id from users where email = 'admin@gmail.com'), (select id from roles where name = 'ROLE_ADMIN'));
 
 insert into users_roles(user_id, rol_id)
-VALUES ((select id from users where email = 'admin'), (select id from roles where name = 'ROLE_CONSULTOR'));
-insert into users_roles(user_id, rol_id)
-VALUES ((select id from users where email = 'admin'), (select id from roles where name = 'ROLE_ADMIN'));
+VALUES ((select id from users where email = 'user@gmail.com'), (select id from roles where name = 'ROLE_CONSULTOR'));
